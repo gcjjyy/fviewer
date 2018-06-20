@@ -121,6 +121,13 @@ int main(int argc, char *argv[])
 				SDL_SetWindowSize(window, WINDOW_WIDTH * scale, WINDOW_HEIGHT * scale);
 				redraw();
 				break;
+
+			case SDLK_ESCAPE:
+				fclose(fp);
+				SDL_DestroyWindow(window);
+				SDL_Quit();
+				return 0;
+				break;
 			}
 		} break;
 
