@@ -12,13 +12,18 @@ int scale = 1;
 
 int main(int argc, char *argv[])
 {
+	SDL_Window *window = NULL;
+	SDL_Surface *screenSurface = NULL;
+	SDL_Event event;
+
 	if (argc < 2)
 	{
 		printf("Usage: %s font_filename [scale(int)]\n", argv[0]);
 		return 0;
 	}
 
-	if (argc >= 3) {
+	if (argc >= 3)
+	{
 		scale = atoi(argv[2]);
 	}
 
@@ -28,9 +33,6 @@ int main(int argc, char *argv[])
 		printf("File not found!\n");
 		return 0;
 	}
-
-	SDL_Window *window = NULL;
-	SDL_Surface *screenSurface = NULL;
 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
@@ -113,8 +115,21 @@ int main(int argc, char *argv[])
 
 	SDL_UpdateWindowSurface(window);
 
-	SDL_Delay(5000);
+	while (SDL_WaitEvent(&event) >= 0)
+	{
+		switch (event.type)
+		{
+			case SDL_QUIT:
+			{
+				SDL_DestroyWindow(window);
+				SDL_Quit();
+				return 0;
+			}
+			break;
+		}
+	}
 
+	printf("Unknown error exit\n");
 	SDL_DestroyWindow(window);
 	SDL_Quit();
 	return 0;
