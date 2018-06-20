@@ -5,47 +5,23 @@
 const int WINDOW_WIDTH = 320;
 const int WINDOW_HEIGHT = 320;
 
+SDL_Window *window = NULL;
+SDL_Surface *screenSurface = NULL;
+SDL_Event event;
+
+FILE *fp;
 uint8_t font_data[32];
 int filesize = 0;
 bool isEng = false;
 int scale = 1;
 
-int main(int argc, char *argv[])
-{
-	SDL_Window *window = NULL;
-	SDL_Surface *screenSurface = NULL;
-	SDL_Event event;
-
-	if (argc < 2)
-	{
-		printf("Usage: %s font_filename [scale(int)]\n", argv[0]);
-		return 0;
-	}
-
-	if (argc >= 3)
-	{
-		scale = atoi(argv[2]);
-	}
-
-	FILE *fp = fopen(argv[1], "r");
-	if (!fp)
-	{
-		printf("File not found!\n");
-		return 0;
-	}
-
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
-	{
-		printf("SDL_Init error: %s\n", SDL_GetError());
-		return 0;
-	}
-
-	window = SDL_CreateWindow(argv[0], SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH * scale, WINDOW_HEIGHT * scale, SDL_WINDOW_SHOWN);
+void redrawWindow(const char *windowTitle) {
+	window = SDL_CreateWindow(windowTitle, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH * scale, WINDOW_HEIGHT * scale, SDL_WINDOW_SHOWN);
 	if (window == NULL)
 	{
 		printf("SDL_CreateWindow error: %s\n", SDL_GetError());
 		SDL_Quit();
-		return 0;
+		exit(0);
 	}
 
 	screenSurface = SDL_GetWindowSurface(window);
@@ -114,13 +90,63 @@ int main(int argc, char *argv[])
 	}
 
 	SDL_UpdateWindowSurface(window);
+}
+
+int main(int argc, char *argv[])
+{
+	if (argc < 2)
+	{
+		printf("Usage: %s font_filename [scale(int)]\n", argv[0]);
+		return 0;
+	}
+
+	if (argc >= 3)
+	{
+		scale = atoi(argv[2]);
+	}
+
+	fp = fopen(argv[1], "r");
+	if (!fp)
+	{
+		printf("File not found!\n");
+		return 0;
+	}
+
+	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+	{
+		printf("SDL_Init error: %s\n", SDL_GetError());
+		return 0;
+	}
+
+	redrawWindow(argv[0]);
 
 	while (SDL_WaitEvent(&event) >= 0)
 	{
 		switch (event.type)
 		{
+			case SDL_KEYDOWN:
+			{
+                switch(event.key.keysym.sym)
+				{
+                    case SDLK_PLUS:
+					case SDLK_EQUALS:
+					if (scale < 5) scale++;
+					SDL_DestroyWindow(window);
+					redrawWindow(argv[0]);
+					break;
+
+					case SDLK_MINUS:
+					if (scale > 1) scale--;
+					SDL_DestroyWindow(window);
+					redrawWindow(argv[0]);
+					break;
+				}
+			}
+			break;
+
 			case SDL_QUIT:
 			{
+				fclose(fp);
 				SDL_DestroyWindow(window);
 				SDL_Quit();
 				return 0;
@@ -130,6 +156,7 @@ int main(int argc, char *argv[])
 	}
 
 	printf("Unknown error exit\n");
+	fclose(fp);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
 	return 0;
