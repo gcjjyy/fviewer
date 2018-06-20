@@ -8,6 +8,7 @@ const int WINDOW_HEIGHT = 320;
 uint8_t font_data[32];
 int filesize = 0;
 bool isEng = false;
+int scale = 2;
 
 int main(int argc, char *argv[])
 {
@@ -34,7 +35,7 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 
-	window = SDL_CreateWindow(argv[0], SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_SHOWN);
+	window = SDL_CreateWindow(argv[0], SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH * scale, WINDOW_HEIGHT * scale, SDL_WINDOW_SHOWN);
 	if (window == NULL)
 	{
 		printf("SDL_CreateWindow error: %s\n", SDL_GetError());
@@ -67,13 +68,13 @@ int main(int argc, char *argv[])
 				{
 					if (font_data[i] & (0x80 >> j))
 					{
-						SDL_Rect rect = {x + j, y + i, 1, 1};
+						SDL_Rect rect = {x + (j * scale), y + (i * scale), scale, scale};
 						SDL_FillRect(screenSurface, &rect, SDL_MapRGB(screenSurface->format, 0x00, 0x00, 0x00));
 					}
 				}
 			}
 
-			x += 8;
+			x += 8 * scale;
 		}
 		else
 		{
@@ -84,7 +85,7 @@ int main(int argc, char *argv[])
 				{
 					if (font_data[i << 1] & (0x80 >> j))
 					{
-						SDL_Rect rect = {x + j, y + i, 1, 1};
+						SDL_Rect rect = {x + (j * scale), y + (i * scale), scale, scale};
 						SDL_FillRect(screenSurface, &rect, SDL_MapRGB(screenSurface->format, 0x00, 0x00, 0x00));
 					}
 				}
@@ -92,18 +93,18 @@ int main(int argc, char *argv[])
 				{
 					if (font_data[(i << 1) + 1] & (0x80 >> j))
 					{
-						SDL_Rect rect = {x + 8 + j, y + i, 1, 1};
+						SDL_Rect rect = {x + ((j + 8) * scale), y + (i * scale), scale, scale};
 						SDL_FillRect(screenSurface, &rect, SDL_MapRGB(screenSurface->format, 0x00, 0x00, 0x00));
 					}
 				}
 			}
-			x += 16;
+			x += 16 * scale;
 		}
 
-		if (x >= WINDOW_WIDTH - 1)
+		if (x >= (WINDOW_WIDTH * scale) - 1)
 		{
 			x = 0;
-			y += 16;
+			y += 16 * scale;
 		}
 	}
 
