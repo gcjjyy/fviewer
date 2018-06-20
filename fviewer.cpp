@@ -8,15 +8,18 @@ const int WINDOW_HEIGHT = 320;
 uint8_t font_data[32];
 int filesize = 0;
 bool isEng = false;
-int scale = 2;
+int scale = 1;
 
 int main(int argc, char *argv[])
 {
-
 	if (argc < 2)
 	{
-		printf("Usage: %s font_filename\n", argv[0]);
+		printf("Usage: %s font_filename [scale(int)]\n", argv[0]);
 		return 0;
+	}
+
+	if (argc >= 3) {
+		scale = atoi(argv[2]);
 	}
 
 	FILE *fp = fopen(argv[1], "r");
