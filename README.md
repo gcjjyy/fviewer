@@ -14,7 +14,7 @@ $ sudo apt install libsdl2-dev
 
 # Build
 ```sh
-$ g++ -o fviewer fviewer.cpp
+$ g++ -o fviewer fviewer.cpp -lSDL2
 ```
 
 # Usage
