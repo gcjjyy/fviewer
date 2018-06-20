@@ -19,7 +19,7 @@ $ g++ -o fviewer fviewer.cpp
 
 # Usage
 ```sh
-$ ./fview H01.HAN
+$ ./fviewer H01.HAN
 ```
 
 # License
