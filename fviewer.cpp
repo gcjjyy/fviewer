@@ -23,25 +23,19 @@ void redraw()
 	fseek(fp, 0L, SEEK_END);
 	filesize = ftell(fp);
 	fseek(fp, 0L, SEEK_SET);
-	if (filesize <= 4096)
-	{
+	if (filesize <= 4096) {
 		isEng = true;
 	}
 
 	int x = 0;
 	int y = 0;
-	while (!feof(fp))
-	{
-		if (isEng)
-		{
+	while (!feof(fp)) {
+		if (isEng) {
 			fread(font_data, 1, 16, fp);
 
-			for (int i = 0; i < 16; i++)
-			{
-				for (int j = 0; j < 8; j++)
-				{
-					if (font_data[i] & (0x80 >> j))
-					{
+			for (int i = 0; i < 16; i++) {
+				for (int j = 0; j < 8; j++) {
+					if (font_data[i] & (0x80 >> j)) {
 						SDL_Rect rect = {x + (j * scale), y + (i * scale), scale, scale};
 						SDL_FillRect(screenSurface, &rect, SDL_MapRGB(screenSurface->format, 0x00, 0x00, 0x00));
 					}
@@ -49,24 +43,17 @@ void redraw()
 			}
 
 			x += 8 * scale;
-		}
-		else
-		{
+		} else {
 			fread(font_data, 1, 32, fp);
-			for (int i = 0; i < 16; i++)
-			{
-				for (int j = 0; j < 8; j++)
-				{
-					if (font_data[i << 1] & (0x80 >> j))
-					{
+			for (int i = 0; i < 16; i++) {
+				for (int j = 0; j < 8; j++) {
+					if (font_data[i << 1] & (0x80 >> j)) {
 						SDL_Rect rect = {x + (j * scale), y + (i * scale), scale, scale};
 						SDL_FillRect(screenSurface, &rect, SDL_MapRGB(screenSurface->format, 0x00, 0x00, 0x00));
 					}
 				}
-				for (int j = 0; j < 8; j++)
-				{
-					if (font_data[(i << 1) + 1] & (0x80 >> j))
-					{
+				for (int j = 0; j < 8; j++) {
+					if (font_data[(i << 1) + 1] & (0x80 >> j)) {
 						SDL_Rect rect = {x + ((j + 8) * scale), y + (i * scale), scale, scale};
 						SDL_FillRect(screenSurface, &rect, SDL_MapRGB(screenSurface->format, 0x00, 0x00, 0x00));
 					}
@@ -75,8 +62,7 @@ void redraw()
 			x += 16 * scale;
 		}
 
-		if (x >= (WINDOW_WIDTH * scale) - 1)
-		{
+		if (x >= (WINDOW_WIDTH * scale) - 1) {
 			x = 0;
 			y += 16 * scale;
 		}
@@ -87,33 +73,29 @@ void redraw()
 
 int main(int argc, char *argv[])
 {
-	if (argc < 2)
-	{
+	if (argc < 2) {
 		printf("Usage: %s font_filename [scale(int)]\n", argv[0]);
 		return 0;
 	}
 
-	if (argc >= 3)
-	{
+	if (argc >= 3) {
 		scale = atoi(argv[2]);
 	}
 
 	fp = fopen(argv[1], "r");
-	if (!fp)
-	{
+	if (!fp) {
 		printf("File not found!\n");
 		return 0;
 	}
 
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
-	{
+	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		printf("SDL_Init error: %s\n", SDL_GetError());
 		return 0;
 	}
 
-	window = SDL_CreateWindow(argv[0], SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH * scale, WINDOW_HEIGHT * scale, SDL_WINDOW_SHOWN);
-	if (window == NULL)
-	{
+	window = SDL_CreateWindow(argv[0], SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH * scale,
+							  WINDOW_HEIGHT * scale, SDL_WINDOW_SHOWN);
+	if (window == NULL) {
 		printf("SDL_CreateWindow error: %s\n", SDL_GetError());
 		SDL_Quit();
 		exit(0);
@@ -121,14 +103,10 @@ int main(int argc, char *argv[])
 
 	redraw();
 
-	while (SDL_WaitEvent(&event) >= 0)
-	{
-		switch (event.type)
-		{
-		case SDL_KEYDOWN:
-		{
-			switch (event.key.keysym.sym)
-			{
+	while (SDL_WaitEvent(&event) >= 0) {
+		switch (event.type) {
+		case SDL_KEYDOWN: {
+			switch (event.key.keysym.sym) {
 			case SDLK_PLUS:
 			case SDLK_EQUALS:
 				if (scale < 5)
@@ -144,17 +122,14 @@ int main(int argc, char *argv[])
 				redraw();
 				break;
 			}
-		}
-		break;
+		} break;
 
-		case SDL_QUIT:
-		{
+		case SDL_QUIT: {
 			fclose(fp);
 			SDL_DestroyWindow(window);
 			SDL_Quit();
 			return 0;
-		}
-		break;
+		} break;
 		}
 	}
 
