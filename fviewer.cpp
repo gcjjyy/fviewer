@@ -15,15 +15,8 @@ int filesize = 0;
 bool isEng = false;
 int scale = 1;
 
-void redrawWindow(const char *windowTitle) {
-	window = SDL_CreateWindow(windowTitle, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH * scale, WINDOW_HEIGHT * scale, SDL_WINDOW_SHOWN);
-	if (window == NULL)
-	{
-		printf("SDL_CreateWindow error: %s\n", SDL_GetError());
-		SDL_Quit();
-		exit(0);
-	}
-
+void redraw()
+{
 	screenSurface = SDL_GetWindowSurface(window);
 	SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xff, 0xff, 0xff));
 
@@ -118,40 +111,50 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 
-	redrawWindow(argv[0]);
+	window = SDL_CreateWindow(argv[0], SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH * scale, WINDOW_HEIGHT * scale, SDL_WINDOW_SHOWN);
+	if (window == NULL)
+	{
+		printf("SDL_CreateWindow error: %s\n", SDL_GetError());
+		SDL_Quit();
+		exit(0);
+	}
+
+	redraw();
 
 	while (SDL_WaitEvent(&event) >= 0)
 	{
 		switch (event.type)
 		{
-			case SDL_KEYDOWN:
+		case SDL_KEYDOWN:
+		{
+			switch (event.key.keysym.sym)
 			{
-                switch(event.key.keysym.sym)
-				{
-                    case SDLK_PLUS:
-					case SDLK_EQUALS:
-					if (scale < 5) scale++;
-					SDL_DestroyWindow(window);
-					redrawWindow(argv[0]);
-					break;
+			case SDLK_PLUS:
+			case SDLK_EQUALS:
+				if (scale < 5)
+					scale++;
+				SDL_SetWindowSize(window, WINDOW_WIDTH * scale, WINDOW_HEIGHT * scale);
+				redraw();
+				break;
 
-					case SDLK_MINUS:
-					if (scale > 1) scale--;
-					SDL_DestroyWindow(window);
-					redrawWindow(argv[0]);
-					break;
-				}
+			case SDLK_MINUS:
+				if (scale > 1)
+					scale--;
+				SDL_SetWindowSize(window, WINDOW_WIDTH * scale, WINDOW_HEIGHT * scale);
+				redraw();
+				break;
 			}
-			break;
+		}
+		break;
 
-			case SDL_QUIT:
-			{
-				fclose(fp);
-				SDL_DestroyWindow(window);
-				SDL_Quit();
-				return 0;
-			}
-			break;
+		case SDL_QUIT:
+		{
+			fclose(fp);
+			SDL_DestroyWindow(window);
+			SDL_Quit();
+			return 0;
+		}
+		break;
 		}
 	}
 
