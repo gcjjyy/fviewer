@@ -5,8 +5,8 @@
 #define JOONG_INDEX (160)
 #define JONG_INDEX (160 + 88)
 
-const int WINDOW_WIDTH = 320;
-const int WINDOW_HEIGHT = 320 + (16 * 4);
+int WINDOW_WIDTH = 320;
+int WINDOW_HEIGHT = 320 + (16 * 4);
 const int MAX_FILESIZE = 65536;
 
 const char g_choseongType[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 3, 3, 1, 2, 4, 4, 4, 2, 1, 3, 0};
@@ -155,12 +155,20 @@ void redraw()
 int main(int argc, char *argv[])
 {
 	if (argc < 2) {
-		printf("Usage: %s font_filename [scale(int)]\n", argv[0]);
+		printf("Usage: %s font_filename [scale(int)] <width> <height>\n", argv[0]);
 		return 0;
 	}
 
 	if (argc >= 3) {
 		scale = atoi(argv[2]);
+	}
+
+	if (argc >= 4) {
+		WINDOW_WIDTH = atoi(argv[3]);
+	}
+
+	if (argc >= 5) {
+		WINDOW_HEIGHT = atoi(argv[4]);
 	}
 
 	fp = fopen(argv[1], "r");
