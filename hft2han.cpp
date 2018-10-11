@@ -4,9 +4,9 @@ char *inputFilename;
 char *outputFilename;
 
 int skipIndices844[] = {
-    20, 20, 20, 20, 20, 20, 20, 20,
-    22, 22, 22, 22,
-    28, 28, 28, 28
+    0, 19, 19, 19, 19, 19, 19, 19,
+    19, 21, 21, 21,
+    21, 28, 28, 28
 };
 
 int main(int argc, char *argv[]) {
