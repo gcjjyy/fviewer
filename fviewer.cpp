@@ -7,7 +7,8 @@
 
 int WINDOW_WIDTH = 320;
 int WINDOW_HEIGHT = 320 + (16 * 4);
-const int MAX_FILESIZE = 65536;
+int header = 0;
+const int MAX_FILESIZE = 65536 * 10;
 
 const char g_choseongType[] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 3, 3, 1, 2, 4, 4, 4, 2, 1, 3, 0};
 const char g_choseongTypeJongseongExist[] = {0, 5, 5, 5, 5, 5, 5, 5, 5, 6, 7, 7, 7, 6, 6, 7, 7, 7, 6, 6, 7, 5};
@@ -67,7 +68,7 @@ void redraw()
 
 	fseek(fp, 0L, SEEK_END);
 	filesize = ftell(fp);
-	fseek(fp, 0L, SEEK_SET);
+	fseek(fp, (long)header, SEEK_SET);
 	if (filesize <= 4096) {
 		isEng = true;
 	}
@@ -155,7 +156,7 @@ void redraw()
 int main(int argc, char *argv[])
 {
 	if (argc < 2) {
-		printf("Usage: %s font_filename [scale(int)] <width> <height>\n", argv[0]);
+		printf("Usage: %s font_filename [scale(int)] <width> <height> <header>\n", argv[0]);
 		return 0;
 	}
 
@@ -169,6 +170,10 @@ int main(int argc, char *argv[])
 
 	if (argc >= 5) {
 		WINDOW_HEIGHT = atoi(argv[4]);
+	}
+
+	if (argc >= 6) {
+		header = atoi(argv[5]);
 	}
 
 	fp = fopen(argv[1], "r");
