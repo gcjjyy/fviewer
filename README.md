@@ -26,4 +26,5 @@ $ ./fviewer H01.HAN
 Distributed under MIT license. See LICENSE file.
 
 # Screenshot
-![Preview](fviewer.png)
+![fviewer](https://user-images.githubusercontent.com/39606947/144691808-d637f684-1213-4f64-8cae-187b969dc6d6.png)
+
